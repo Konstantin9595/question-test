@@ -8,8 +8,18 @@ use App\QuestionTest;
 $log = new Monolog\Logger('name');
 $log->pushHandler(new Monolog\Handler\StreamHandler('app.log', Monolog\Logger::WARNING));
 
+$database = new \Filebase\Database([
+    'dir' => __DIR__ . "/database"
+]);
+
+$item = $database->get("respondent_testing");
+
+$item->tests = [ uniqid() => ["question" => "Любите ли вы выпекать пироги?", "answears" => [1 => "Люблю", 2 => "Думаю только об этом, не могу спать.", 3 => "Нет"]]];
+
+$item->save();
+print_r($database->findAll());
 session_start();
 
-$test = new QuestionTest();
+// $test = new QuestionTest();
 
-$test->action();
+// $test->action();
