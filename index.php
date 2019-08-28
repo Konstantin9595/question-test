@@ -14,7 +14,15 @@ $database = new \Filebase\Database([
 
 $item = $database->get("respondent_testing");
 
-$item->tests = [ uniqid() => ["question" => "Любите ли вы выпекать пироги?", "answears" => [1 => "Люблю", 2 => "Думаю только об этом, не могу спать.", 3 => "Нет"]]];
+$item->tests = [ uniqid() => [
+    "question" => "Любите ли вы выпекать пироги?", 
+    "answears" => [
+        1 => "Люблю", 
+        2 => "Думаю только об этом, не могу спать.", 
+        3 => "Нет" 
+    ],
+    "weight" => [1 => 50, 2 => 100, 3 => 0]
+]];
 
 $item->save();
 print_r($database->findAll());

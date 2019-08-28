@@ -5,15 +5,35 @@ use App\QuestionTest;
 
 final class QuestionTestTest extends TestCase
 {
-    public function testAction(): void
+    public function testCreate(): void
     {
         $database = new \Filebase\Database(['dir' => dirname(__DIR__) . "/database"]);
 
-        $addTest = ["question" => "Вопрос", "answears" => [1 => "first", 2 => "second"]];
-        $test = new QuestionTest();
-        
-        $this->assertIsArray($test->create($addTest));
-        //$this->assertEquals($test->create($addTest), $addTest);
+        $addTest =  [
+            "type" => "cook",
+            "question" => "Любите ли вы выпекать пироги?", 
+            "answears" => [
+                1 => "Люблю", 
+                2 => "Думаю только об этом, не могу спать.", 
+                3 => "Нет" 
+            ],
+            "weight" => [1 => 50, 2 => 100, 3 => 0]
+        ];
+
+        $questionTest = new QuestionTest();
+        $this->assertIsArray($questionTest->create($addTest));
+
+    }
+
+    public function testGet()
+    {
+        $addTest = ["type" => "cook", "question" => "Любите ли вы выпекать пироги?", "answears" => [1 => "Люблю", 2 => "Думаю только об этом, не могу спать.", 3 => "Нет" ],"weight" => [1 => 50, 2 => 100, 3 => 0]];
+        $questionTest = new QuestionTest();
+        $questionTest->create($addTest);
+
+        $cookTest = $questionTest->get("cook");
+        $this->assertIsArray($cookTest);
+        $this->assertNull($questionTest->get("foo-bar"));
     }
     
 }
