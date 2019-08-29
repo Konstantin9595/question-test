@@ -4,12 +4,8 @@ use App\AlgorithmInterface;
 
 class SocialGroupAlgorithm implements AlgorithmInterface
 {
-    public function make()
-    {
-
-    }
-    public function getResult()
-    {
-        
-    }
+    public function __construct($userAnswears = [], $weightAnswears = []);
+    public function getResult();
+    public function checkTest();
+    public function getWeight();
 }

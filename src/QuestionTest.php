@@ -7,7 +7,7 @@ use Tightenco\Collect\Support\Collection;
 class QuestionTest {
 
     private $database;
-    private $dbName = "respondent_testing";
+    private $tableName = "respondent_testing";
 
     private $filterStructure = [
         "type" => "",
@@ -21,6 +21,7 @@ class QuestionTest {
     public function __construct()
     {
         $this->database = new \Filebase\Database(['dir' => dirname(__DIR__) . "/database"]);
+        $this->table = $this->database->get($this->tableName);
     }
 
     public function create($test = [] )
@@ -28,11 +29,11 @@ class QuestionTest {
 
         $this->test = array_intersect_key($test, $this->filterStructure);
 
-        $items = $this->database->get($this->dbName);
-        $items->tests[uniqid()] = $this->test;
-        $items->save();
+        $this->table->tests[uniqid()] = $this->test;
+        $this->table->save();
 
         return $this->database->query()->results();
+
     }
 
     public function update($test = [])
@@ -54,18 +55,32 @@ class QuestionTest {
 
     public function get($type = '') 
     {
-        $items = $this->database->get($this->dbName)->toArray();
+        $items = $this->database->get($this->tableName)->toArray();
         $collect = new Collection($items);
-
+        $output = ["questions" => null];
+        
         $result = $collect->map(function($item) use($type) {
             return collect($item)->filter(function($value, $id) use($type) {
                return $value['type'] === $type;
             });
         })->toArray();
+       
+        $isset = isset($result['tests']) && !empty($result['tests']) ? $result['tests'] : [];
 
-        $output = isset($result['tests']) && !empty($result['tests']) ? $result['tests'] : null;
+        $output['questions'] = $isset;
+        return $this->orderItteration($output);
 
-        return $output;
+    }
+
+    private function orderItteration($collection)
+    {
+        if(isset($collection['questions'])) {
+            $res = [];
+            foreach($collection['questions'] as $key => $value) {
+                $res[] = $value;                
+            }
+            return $res;
+        }
     }
 
 }
